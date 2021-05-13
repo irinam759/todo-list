@@ -51,18 +51,25 @@ updateStatus = (task) => {
 }
 
 changeFilter = (e) => {
-  //console.log(e.target.value)
+
   this.setState({
     filter: e.target.value
   })
 }
 
+handleSubmit = (e) => {
+  e.preventDefault();
+ // debugger;
+  this.addTask();
+}
+
   render(){
     
     const allTasks = this.state.list.filter(task => {
-      if(this.state.filter === 'all') {return true;}
+      //if(this.state.filter === 'all') {return true;}
       if(this.state.filter === 'active'){return !task.isCompleted}
       if(this.state.filter === 'completed'){return task.isCompleted}
+      return true;//filter 'all'
     })
     .map((task,index) =>{
     return (
@@ -73,6 +80,7 @@ changeFilter = (e) => {
   });
     return (
       <div>
+        <form onSubmit={this.handleSubmit}>
         <input value={this.state.text} onChange={this.changeText} type="text" placeholder="Add new item" ></input>
         <button type="button" onClick={this.addTask}>Add</button>
         <select value={this.state.filter} onChange={this.changeFilter}>
@@ -80,6 +88,7 @@ changeFilter = (e) => {
           <option value={'active'}>Active</option>
           <option value={'completed'}>Completed</option>
         </select>
+      </form>
         <div>
       {allTasks}
         </div>

@@ -5,7 +5,8 @@ class App extends React.Component{
     super(props);
     this.state = {
       text: '', 
-      list:[]
+      list:[],
+      filter:'all'
     }
   }
 
@@ -26,26 +27,47 @@ class App extends React.Component{
       text:''
     });
   }
-updateStatus = (index) => {
-  const task = this.state.list[index];
-  console.log(task)
-  task.isCompleted = !task.isCompleted;
-   const list = this.state.list.slice();
-   list.splice(index,1,task);
-   console.log(list);
+updateStatus = (task) => {
+  /*Working with index */
+  /*Option 1 */
+  // const task = this.state.list[index];
+  // task.isCompleted = !task.isCompleted;
+  //  const list = this.state.list.slice();
+  //  list.splice(index,1,task);
+  
+  /* Option 2 */
+  // this.setState({
+  //   list: this.state.list.map((taskItem)=> {
+  //          return taskItem === task ? {text:taskItem.text, isCompleted: !taskItem.isCompleted} : taskItem
+  //     })
+  // })
+
+   /*Working with task object */
   this.setState({
-    list: list
+    list: this.state.list.map((taskItem)=> {
+           return taskItem === task ? {...taskItem, isCompleted: !taskItem.isCompleted} : taskItem
+      })
   })
- 
+}
+
+changeFilter = (e) => {
+  //console.log(e.target.value)
+  this.setState({
+    filter: e.target.value
+  })
 }
 
   render(){
     
-    const allTasks = this.state.list.map((task,index) =>{
+    const allTasks = this.state.list.filter(task => {
+      if(this.state.filter === 'all') {return true;}
+      if(this.state.filter === 'active'){return !task.isCompleted}
+      if(this.state.filter === 'completed'){return task.isCompleted}
+    })
+    .map((task,index) =>{
     return (
-    
     <div key={index}>
-      <input type="checkbox" checked={task.isCompleted} onChange={(() => this.updateStatus(index))}/>
+      <input type="checkbox" checked={task.isCompleted} onChange={() => this.updateStatus(task)}/>
       {task.text}</div>
     )
   });
@@ -53,6 +75,11 @@ updateStatus = (index) => {
       <div>
         <input value={this.state.text} onChange={this.changeText} type="text" placeholder="Add new item" ></input>
         <button type="button" onClick={this.addTask}>Add</button>
+        <select value={this.state.filter} onChange={this.changeFilter}>
+          <option value={'all'}>All</option>
+          <option value={'active'}>Active</option>
+          <option value={'completed'}>Completed</option>
+        </select>
         <div>
       {allTasks}
         </div>

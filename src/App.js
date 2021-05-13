@@ -18,7 +18,8 @@ class App extends React.Component{
   }
 
   addTask = () => {
-    const newTask = {
+    if(this.state.text.trim()){ //trim - method of cleaning spaces on string
+      const newTask = {
       text: this.state.text,
       isCompleted:false
     }
@@ -26,6 +27,13 @@ class App extends React.Component{
       list:this.state.list.concat(newTask),
       text:''
     });
+  
+    } else {
+      this.setState({
+        text:''
+      });
+      
+    }
   }
 updateStatus = (task) => {
   /*Working with index */
@@ -51,7 +59,7 @@ updateStatus = (task) => {
 }
 
 changeFilter = (e) => {
-
+  //console.log(e.target.value)
   this.setState({
     filter: e.target.value
   })

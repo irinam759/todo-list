@@ -71,6 +71,26 @@ handleSubmit = (e) => {
   this.addTask();
 }
 
+//func delete to TASK prompt('dsdsd');
+// const userInput = window.confirm('are you ok?');
+// console.log(userInput);
+remuveTask = (task) => {
+  if (!task.isCompleted){
+    const confirmed = window.confirm('Are you sure? The task is not completed yet');
+    if(confirmed)
+    {
+      this.setState({
+        list:this.state.list.filter(taskItem => !(taskItem === task))
+      });
+    }
+  } else {
+    this.setState({
+      list:this.state.list.filter(taskItem => !(taskItem === task))
+    });
+  }
+
+}
+
   render(){
     
     const allTasks = this.state.list.filter(task => {
@@ -83,9 +103,13 @@ handleSubmit = (e) => {
     return (
     <div key={index}>
       <input type="checkbox" checked={task.isCompleted} onChange={() => this.updateStatus(task)}/>
-      {task.text}</div>
+      {task.text}
+      <button onClick = {() => this.remuveTask(task)}>Remuve</button>
+      </div>
     )
   });
+ 
+
     return (
       <div>
         <form onSubmit={this.handleSubmit}>

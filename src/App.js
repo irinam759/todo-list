@@ -1,4 +1,5 @@
 import React from 'react';
+import './App.css';
 
 class App extends React.Component{
   constructor(props) {
@@ -6,7 +7,9 @@ class App extends React.Component{
     this.state = {
       text: '', 
       list:[],
-      filter:'all'
+      filter:'all',
+      count: 0
+     
     }
   }
 
@@ -21,11 +24,14 @@ class App extends React.Component{
     if(this.state.text.trim()){ //trim - method of cleaning spaces on string
       const newTask = {
       text: this.state.text,
-      isCompleted:false
+      isCompleted:false,
+     
     }
     this.setState({
       list:this.state.list.concat(newTask),
       text:''
+      // count: this.state.list.filter((status) => !status.isCompleted).length
+     
     });
   
     } else {
@@ -49,12 +55,13 @@ updateStatus = (task) => {
   //          return taskItem === task ? {text:taskItem.text, isCompleted: !taskItem.isCompleted} : taskItem
   //     })
   // })
-
+console.log(this.state.list)
    /*Working with task object */
   this.setState({
     list: this.state.list.map((taskItem)=> {
            return taskItem === task ? {...taskItem, isCompleted: !taskItem.isCompleted} : taskItem
       })
+      // count: this.state.list.filter((status) => !status.isCompleted).length
   })
 }
 
@@ -92,40 +99,52 @@ remuveTask = (task) => {
 }
 
   render(){
-    
+
     const allTasks = this.state.list.filter(task => {
       //if(this.state.filter === 'all') {return true;}
-      if(this.state.filter === 'active'){return !task.isCompleted}
+      if(this.state.filter === 'active'){
+        return !task.isCompleted}
       if(this.state.filter === 'completed'){return task.isCompleted}
       return true;//filter 'all'
     })
     .map((task,index) =>{
+      
     return (
     <div key={index}>
       <input type="checkbox" checked={task.isCompleted} onChange={() => this.updateStatus(task)}/>
-      {task.text}
-      <button onClick = {() => this.remuveTask(task)}>Remuve</button>
+      <span className={task.isCompleted ? 'complited dis' : 'dis' }>{task.text}</span>
+      <button className='button' onClick = {() => this.remuveTask(task)}>X</button>
       </div>
     )
   });
- 
+    const compQuant =  this.state.list.filter((status) => !status.isCompleted).length;
+    const counts = (!compQuant ? 'Your list is empty' : `${compQuant} items left from ${this.state.list.length}`);
+    
+
 
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
         <input value={this.state.text} onChange={this.changeText} type="text" placeholder="Add new item" ></input>
         <button type="button" onClick={this.addTask}>Add</button>
-        <select value={this.state.filter} onChange={this.changeFilter}>
-          <option value={'all'}>All</option>
-          <option value={'active'}>Active</option>
-          <option value={'completed'}>Completed</option>
-        </select>
+       
       </form>
         <div>
       {allTasks}
         </div>
+      <div>{counts}</div>
       
+      <form>
+        <button name='all' value='all' type="button" onClick={this.changeFilter}>All</button>
+        <button name='active' value='active' type="button" onClick={this.changeFilter}>Active</button>
+        <button  name='completed' value='completed' type="button" onClick={this.changeFilter}>Completed</button>
+      </form>
       
+      {/* <select value={this.state.filter} onChange={this.changeFilter}>
+          <option value={'all'}>All</option>
+          <option value={'active'}>Active</option>
+          <option value={'completed'}>Completed</option>
+        </select> */}
       </div>
     )
   }
